@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { client } from "@/sanity/lib/client";
-import { urlFor } from "@/sanity/lib/image";
+// import { urlFor } from "@/sanity/lib/image";
 import Swal from "sweetalert2";
 import ProtectedRoute from "@/app/components/ProtectedRoute";
 
@@ -24,7 +24,7 @@ interface Order {
 
 export default function AdminDashboard() {
   const [orders, setOrders] = useState<Order[]>([]);
-  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
+  const [, setSelectedOrderId] = useState<string | null>(null);
   const [filter, setFilter] = useState("All");
 
   useEffect(() => {
