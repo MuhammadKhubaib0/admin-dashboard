@@ -2,9 +2,13 @@
 
 import React, { useEffect, useState } from "react";
 import { client } from "@/sanity/lib/client";
-// import { urlFor } from "@/sanity/lib/image";
 import Swal from "sweetalert2";
 import ProtectedRoute from "@/app/components/ProtectedRoute";
+
+interface CartItem {
+  productName: string;
+  imageUrl: string;
+}
 
 interface Order {
   _id: string;
@@ -19,12 +23,12 @@ interface Order {
   discount: number;
   orderDate: string;
   status: string | null;
-  cartItems: { productName: string; imageUrl: string }[];
+  cartItems: CartItem[];
 }
 
 export default function AdminDashboard() {
   const [orders, setOrders] = useState<Order[]>([]);
-  const [, setSelectedOrderId] = useState<string | null>(null);
+  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
   const [filter, setFilter] = useState("All");
 
   useEffect(() => {
@@ -43,7 +47,7 @@ export default function AdminDashboard() {
           discount,
           orderDate,
           status,
-          cartItems[]{
+          cartItems[]->{
             productName,
             "imageUrl": image.asset->url
           }
@@ -110,7 +114,7 @@ export default function AdminDashboard() {
         <nav className="bg-red-600 text-white p-4 shadow-lg flex justify-between">
           <h2 className="text-2xl font-bold">Admin Dashboard</h2>
           <div className="flex space-x-4">
-            {["All", "pending", "dispatch", "success"].map((status) => (
+            {["All", "pending", "dispatched", "success"].map((status) => (
               <button
                 key={status}
                 className={`px-4 py-2 rounded-lg transition-all ${
@@ -159,7 +163,7 @@ export default function AdminDashboard() {
                           className="bg-gray-100 p-1 rounded"
                         >
                           <option value="pending">Pending</option>
-                          <option value="dispatch">Dispatch</option>
+                          <option value="dispatched">Dispatch</option>
                           <option value="success">Completed</option>
                         </select>
                       </td>
@@ -175,6 +179,25 @@ export default function AdminDashboard() {
                         </button>
                       </td>
                     </tr>
+                    {order._id === selectedOrderId && (
+                      <tr>
+                        <td colSpan={7}>
+                          <div>
+                            <h3 className="font-semibold">Cart Items:</h3>
+                            {order.cartItems.map((item, idx) => (
+                              <div key={idx} className="flex items-center">
+                                <img
+                                  src={item.imageUrl}
+                                  alt={item.productName}
+                                  className="w-12 h-12 object-cover mr-4"
+                                />
+                                <span>{item.productName}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </td>
+                      </tr>
+                    )}
                   </React.Fragment>
                 ))}
               </tbody>
